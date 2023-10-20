@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "All Tranasctions";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table" id="transactionTable">
+    <tbody></tbody>
+</table>
+
+
+@section Scripts
+{
+    <script src="~/js/transactionTable.js" asp-append-version="true"></script>
+    <script>
+        LoadTableContents(0, 'transactionTable', 'default', 'purchasing_date', 'desc');
+    </script>
+}

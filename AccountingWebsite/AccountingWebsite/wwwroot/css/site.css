@@ -1,0 +1,120 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/* Themes */
+
+[data-theme="Light"] {
+	--body-bg-color: white;
+	--header-bg-color: white;
+	--header-text-color: black;
+	--text-color: black;
+	--table-header-bg-color: black;
+	--table-header-text-color: white;
+}
+
+html { /* Dark Theme is the default */
+	--body-bg-color: #424242;
+	--header-bg-color: #1c1c1c;
+	--header-text-color: white;
+	--text-color: white;
+	--table-header-bg-color: #222;
+	--table-header-text-color: white;
+}
+
+[data-theme="Pink"] {
+	--body-bg-color: #FDCEDF;
+	--header-bg-color: #F797BA;
+	--header-text-color: white;
+	--text-color: black;
+	--table-header-bg-color: #F797BA;
+	--table-header-text-color: white;
+}
+
+[data-theme="Orange"] {
+	--body-bg-color: #FF9658;
+	--header-bg-color: #FF5D2B;
+	--header-text-color: white;
+	--text-color: black;
+	--table-header-bg-color: #FF5D2B;
+	--table-header-text-color: white;
+}
+
+[data-theme="Blue"] {
+	--body-bg-color: #ABE4FF;
+	--header-bg-color: #1E45E1;
+	--header-text-color: white;
+	--text-color: black;
+	--table-header-bg-color: #1E45E1;
+	--table-header-text-color: white;
+}
+
+[data-theme="Red"] {
+	--body-bg-color: #FFA8A8;
+	--header-bg-color: #E11E1E;
+	--header-text-color: white;
+	--text-color: black;
+	--table-header-bg-color: #E11E1E;
+	--table-header-text-color: white;
+}
+
+[data-theme="Green"] {
+	--body-bg-color: #BFFFA8;
+	--header-bg-color: #0D7B09;
+	--header-text-color: white;
+	--text-color: black;
+	--table-header-bg-color: #0D7B09;
+	--table-header-text-color: white;
+}
+
+body {
+	background-color: var(--body-bg-color);
+}
+
+nav {
+	background-color: var(--header-bg-color);
+}
+
+nav a {
+	color: var(--header-text-color) !important;
+}
+
+h1, p, td {
+	color: var(--text-color);
+}
+
+table {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.transaction-search {
+	width: 100%;
+}
+
+#transactionTable th {
+	background-color: var(--table-header-bg-color);
+}
+
+#transactionTable th a {
+	color: var(--table-header-text-color);
+}
