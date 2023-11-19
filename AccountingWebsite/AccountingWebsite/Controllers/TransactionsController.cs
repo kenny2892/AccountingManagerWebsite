@@ -210,7 +210,7 @@ namespace AccountingWebsite.Controllers
             var existingTransactions = _transactionContext.Transactions.ToList();
             var lines = content.Split("\n").Where(line => !String.IsNullOrEmpty(line.Replace(",", ""))).ToList();
             var regex = new Regex("(?<=^|,)(\"(?:[^\"]|\"\")*\"|[^,]*)");
-            var headers = regex.Matches(lines[0]).Select(match => match.Value).ToList();
+            var headers = regex.Matches(lines[0]).Select(match => match.Value.Trim()).ToList();
 
             var statementMaps = _statementContext.StatementMappings.ToList().Where(map => 
             {
