@@ -396,3 +396,13 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+AccountingWebsite/AccountingWebsite/receipt_images/
+
+AccountingWebsite/AccountingWebsite/wwwroot/images/logos/
+
+*.sqlite
+
+*.sqlite-shm
+
+*.sqlite-wal
