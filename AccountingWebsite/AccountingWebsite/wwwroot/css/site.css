@@ -140,6 +140,10 @@ table th a {
 	color: var(--table-header-text-color);
 }
 
+.import-table th {
+	color: var(--table-header-text-color);
+}
+
 .container {
 	max-width: 80% !important;
 }
