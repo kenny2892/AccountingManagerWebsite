@@ -1,0 +1,129 @@
+﻿@model List<Transaction>
+
+<form method="post" action="/Transactions/ImportRows">
+    @if(Model.Count > 0)
+    {
+        <p><span style="font-size: 1.75rem">@Model[0].Bank</span><span style="font-size: 1.25rem"> - @(Model[0].IsCredit ? "Credit" : "Debit")</span></p>
+    }
+
+    <button type="submit" style="margin-bottom: 20px;">Submit</button>
+    <div class="scrollable-wrapper import-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Purchasing Date</th>
+                    <th>Posting Date</th>
+                    <th>Amount</th>
+                    <th>Check Number</th>
+                    <th>Reference Number</th>
+                    <th>Description</th>
+                    <th>Category One</th>
+                    <th>Category Two</th>
+                    <th>Type</th>
+                    <th>Balance</th>
+                    <th>Memo</th>
+                    <th>Extended Description</th>
+                    <th>Vendor Name</th>
+                    <!--<th>Receipt Relative FilePath</th>-->
+                    <th>Is Purchase</th>
+                    <th>Is Credit</th>
+                    <th>Is Check</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(int i = 0; i < Model.Count(); i++)
+                {
+                    var item = @Model[i];
+
+                    <input type="hidden" name="transactions[@i].Bank" value="@item.Bank" />
+                    <tr>
+                        <td>
+                            <input type="text" name="transactions[@i].TransactionID" value="@item.TransactionID" readonly />
+                        </td>
+                        <td>
+                            <input type="datetime-local" name="transactions[@i].PurchasingDate" value="@item.PurchasingDate.ToString("yyyy-MM-ddThh:mm:ss")" />
+                        </td>
+                        <td>
+                            <input type="datetime-local" name="transactions[@i].PostingDate" value="@item.PostingDate.ToString("yyyy-MM-ddThh:mm:ss")" />
+                        </td>
+                        <td>
+                            <input type="number" name="transactions[@i].Amount" value="@item.Amount" />
+                        </td>
+                        <td>
+                            <input type="text" name="transactions[@i].CheckNumber" value="@item.CheckNumber" />
+                        </td>
+                        <td>
+                            <input type="text" name="transactions[@i].ReferenceNumber" value="@item.ReferenceNumber" />
+                        </td>
+                        <td>
+                            <input type="text" name="transactions[@i].Description" value="@item.Description" />
+                        </td>
+                        <td>
+                            <input type="text" name="transactions[@i].CategoryOne" value="@item.CategoryOne" />
+                        </td>
+                        <td>
+                            <input type="text" name="transactions[@i].CategoryTwo" value="@item.CategoryTwo" />
+                        </td>
+                        <td>
+                            <input type="text" name="transactions[@i].Type" value="@item.Type" />
+                        </td>
+                        <td>
+                            <input type="number" name="transactions[@i].Balance" value="@item.Balance" />
+                        </td>
+                        <td>
+                            <input type="text" name="transactions[@i].Memo" value="@item.Memo" />
+                        </td>
+                        <td>
+                            <input type="text" name="transactions[@i].ExtendedDescription" value="@item.ExtendedDescription" />
+                        </td>
+                        <td>
+                            <input type="text" name="transactions[@i].VendorName" value="@item.VendorName" />
+                        </td>
+                        <td>
+                            @*Checkboxes are weird. Since I am using the index number, I can't use asp-for, so instead I am manually making the 2 input fields*@
+                            @*Source: https://stackoverflow.com/q/57079165*@
+                            @if(item.IsPurchase)
+                            {
+                                <input type="checkbox" name="transactions[@i].IsPurchase" value="true" checked/>
+                            }
+
+                            else
+                            {
+                                <input type="checkbox" name="transactions[@i].IsPurchase" value="true" />
+                            }
+
+                            <input type="hidden" name="transactions[@i].IsPurchase" value="false" />
+                        </td>
+                        <td>
+                            @if(item.IsCredit)
+                            {
+                                <input type="checkbox" name="transactions[@i].IsCredit" value="true" checked />
+                            }
+
+                            else
+                            {
+                                <input type="checkbox" name="transactions[@i].IsCredit" value="true" />
+                            }
+
+                            <input type="hidden" name="transactions[@i].IsCredit" value="false" />
+                        </td>
+                        <td>
+                            @if(item.IsCheck)
+                            {
+                                <input type="checkbox" name="transactions[@i].IsCheck" value="true" checked />
+                            }
+
+                            else
+                            {
+                                <input type="checkbox" name="transactions[@i].IsCheck" value="true" />
+                            }
+
+                            <input type="hidden" name="transactions[@i].IsCheck" value="false" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</form>

@@ -1,0 +1,110 @@
+﻿@model ReceiptIndexViewModel
+
+@{
+    ViewData["Title"] = "Receipts";
+}
+
+<h1>Receipts</h1>
+
+<form method="post" action="/Receipts/UploadReceipt" enctype="multipart/form-data">
+    <input type="file" name="receiptFiles" id="receiptFiles" accept=".jpg,.jpeg,.png" onchange="form.submit()" multiple />
+</form>
+
+<form method="post" action="/Receipts/FilterReceipts">
+    <label for="mappedStatus">Mapping Requirements: </label>
+    <select name="mappedStatus" id="mappedStatus">
+        @if(Model.MappedStatus == "Only Mapped")
+        {
+            <option value=""></option>
+            <option value="Only Mapped" selected>Only Mapped</option>
+            <option value="Only Not Mapped">Only Not Mapped</option>
+        }
+
+        else if(Model.MappedStatus == "Only Not Mapped")
+        {
+            <option value=""></option>
+            <option value="Only Mapped">Only Mapped</option>
+            <option value="Only Not Mapped" selected>Only Not Mapped</option>
+        }
+
+        else
+        {
+            <option value="" selected></option>
+            <option value="Only Mapped">Only Mapped</option>
+            <option value="Only Not Mapped">Only Not Mapped</option>
+        }
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+<hr style="height: 3px;" />
+
+@if(Model != null && Model.ReceiptFileNames.Count > 0)
+{
+    <div class="row">
+        <div class="col-6">
+            <div id="receiptDetails">
+            </div>
+        </div>
+        <div class="col-6">
+            <div id="carouselReceiptsToDisplay" class="carousel slide carousel-receipts" data-bs-ride="true" data-bs-interval="false">
+                <div class="carousel-indicators">
+                    @for(int i = 0; i < Model.ReceiptFileNames.Count; i++)
+                    {
+                        @if(i == 0)
+                        {
+                            <button type="button" data-bs-target="#carouselReceiptsToDisplay" data-bs-slide-to="@i" class="active" aria-current="true" aria-label="Slide @i"></button>
+                        }
+
+                        else
+                        {
+                            <button type="button" data-bs-target="#carouselReceiptsToDisplay" data-bs-slide-to="@i" aria-label="Slide @i"></button>
+                        }
+                    }
+                </div>
+                <div class="carousel-inner">
+                    @for(int i = 0; i < Model.ReceiptFileNames.Count; i++)
+                    {
+                        var id = "receiptImage" + i;
+                        @if(i == 0)
+                        {
+                            <div class="carousel-item active">
+                                <div class="d-flex justify-content-center">
+                                    <img class="d-block" id="@id" src="/receipt_images/@Model.ReceiptFileNames[i]" alt="Slide #@(i + 1)">
+                                </div>
+                            </div>
+                        }
+
+                        else
+                        {
+                            <div class="carousel-item">
+                                <div class="d-flex justify-content-center">
+                                    <img class="d-block" id="@id" src="/receipt_images/@Model.ReceiptFileNames[i]" alt="Slide #@(i + 1)">
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselReceiptsToDisplay" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselReceiptsToDisplay" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts
+{
+    <script src="~/js/receipts.js" asp-append-version="true"></script>
+    <script>
+        @if(Model.ReceiptFileNames.Count > 0)
+        {
+            <text>LoadReceiptDetails("@Model.ReceiptFileNames[0]"); </text>
+        }
+    </script>
+}

@@ -1,0 +1,17 @@
+﻿@model string
+
+@* Source for HTML and CSS: https://stackoverflow.com/a/57424477 *@
+@* Model is the parameter for the form *@
+
+<div class="switch-toggle">
+
+    <input id="on-@Model" name="@Model" class="toggle-on" type="radio" value="on" />
+    <label for="on-@Model" onclick="">ON</label>
+
+    <input id="na-@Model" name="@Model" type="radio" checked="checked" value="na" />
+    <label for="na-@Model" class="disabled" onclick="">N/A</label>
+
+    <input id="off-@Model" name="@Model" class="toggle-off" type="radio" value="off" />
+    <label for="off-@Model" onclick="">OFF</label>
+
+</div>

@@ -1,0 +1,11 @@
+﻿@model DropdownSearchViewModel
+
+<div class="dropdown-search" tabindex="100">
+    <input class="dropdown-search-input" type="text" id="@Model.DropdownValueID" placeholder="@Model.PromptText" value="@Model.SelectedOption" />
+    <ul class="dropdown-search-elements">
+        @for(int i = 0; i < Model.Options.Count; i++)
+        {
+            <li>@Model.Options[i]</li>
+        }
+    </ul>
+</div>

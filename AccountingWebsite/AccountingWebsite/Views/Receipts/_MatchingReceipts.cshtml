@@ -1,0 +1,50 @@
+﻿@model List<Transaction>
+
+<tr>
+    <td>
+        <input type="checkbox" class="transaction-selection-checkbox" value="--SKIP--" />
+    </td>
+    <td>
+    </td>
+    <td>
+    </td>
+    <td>        
+    </td>
+    <td>        
+    </td>
+    <td>
+        Skip this Receipt
+    </td>
+</tr>
+
+@foreach(var item in Model)
+{
+    <tr>
+        <td>
+            @if(Model.Count == 1)
+            {
+                <input type="checkbox" class="transaction-selection-checkbox" value="@item.TransactionID" checked="checked"/>
+            }
+
+            else
+            {
+                <input type="checkbox" class="transaction-selection-checkbox" value="@item.TransactionID" />
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Bank)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VendorName)
+        </td>
+        <td>
+            @item.PurchasingDate.ToShortDateString()
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AmountDisplay)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+    </tr>
+}

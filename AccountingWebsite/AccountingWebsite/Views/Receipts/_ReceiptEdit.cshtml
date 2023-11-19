@@ -1,0 +1,82 @@
+﻿@model ReceiptEditViewModel
+
+<div class="row">
+    <div class="col-6 receipt-edit-details-side">
+        <div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="vendor-input-@Model.DisplayIndex">Vendor: </label>
+                </div>
+                <div class="col-6">
+
+                    <select id="vendor-input-@Model.DisplayIndex">
+                        @if(String.IsNullOrEmpty(Model.Vendor))
+                        {
+                            <option value="" selected="selected"> </option>
+                        }
+
+                        else
+                        {
+                            <option value=""> </option>
+                        }
+
+                        @foreach(var vendor in Model.VendorOptions)
+                        {
+                            @if(Model.Vendor == vendor)
+                            {
+                                <option value="@vendor" selected="selected">@vendor</option>
+                            }
+
+                            else
+                            {
+                                <option value="@vendor">@vendor</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="purchase-date-input-@Model.DisplayIndex">Purchase Date: </label>
+                </div>
+                <div class="col-6">
+                    <input type="datetime-local" id="purchase-date-input-@Model.DisplayIndex" value="@Model.PurchaseDate.ToString("yyyy-MM-ddThh:mm:ss")" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="amount-input-@Model.DisplayIndex">Amount: </label>
+                </div>
+                <div class="col-6">
+                    <input type="number" id="amount-input-@Model.DisplayIndex" value="@Model.Amount" step="any" />
+                </div>
+            </div>
+            <br />
+            <button type="submit" onclick="FindMatches(@Model.DisplayIndex); return false;">Update Search Results</button>
+
+            <input type="hidden" id="file-name-@Model.DisplayIndex" name="vms[@Model.DisplayIndex].FileName" value="@Model.FileName" />
+            <input type="hidden" id="selected-transaction-id-@Model.DisplayIndex" name="vms[@Model.DisplayIndex].TransactionID" value="" />
+            <input type="hidden" id="purchase-date-@Model.DisplayIndex" name="vms[@Model.DisplayIndex].PurchaseDate" value="@Model.PurchaseDate.ToString("yyyy-MM-ddThh:mm:ss")" />
+        </div>
+
+        <div class="receipt-edit-table">
+            <table class="table" id="transactionTable-@Model.DisplayIndex">
+                <thead>
+                    <tr>
+                        <th>Select</th>
+                        <th>Bank</th>
+                        <th>Vendor</th>
+                        <th>Purchasing Date</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionTable-body-@Model.DisplayIndex">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-6">
+        <img class="d-block receipt-edit-img" src="/receipt_images/@Model.FileName" alt="@Model.FileName">
+    </div>
+</div>

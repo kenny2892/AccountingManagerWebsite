@@ -1,0 +1,76 @@
+﻿@model ReceiptDetailsViewModel
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment env
+
+@if(Model != null)
+{
+    <div class="details-grid">
+
+        <form method="post" action="/Receipts/Edit">
+            <input type="hidden" name="fileName" value="@Model.FileName" />
+            <button type="submit">Edit</button>
+        </form>
+
+        @if(Model.Transaction != null)
+        {
+            <div class="row">
+                <div class="col-sm-1">Bank: </div>
+                <div class="col-sm-3">
+                    @if(System.IO.File.Exists(System.IO.Path.Combine(env.WebRootPath, "images/logos/" + @Model.Transaction.Bank + ".png")))
+                    {
+                        <img src="@Url.Content("~/images/logos/" + Model.Transaction.Bank + ".png")" class="bank-image" title="@Model.Transaction.Bank" />
+                    }
+
+                    else
+                    {
+                        @Model.Transaction.Bank
+                    }
+                </div>
+
+                <div class="col-sm-1">Type: </div>
+                <div class="col-sm-3">@Model.Transaction.Type</div>
+                <div class="col-sm-1">Vendor: </div>
+                <div class="col-sm-3">
+                    @if(System.IO.File.Exists(System.IO.Path.Combine(env.WebRootPath, "images/logos/" + @Model.Transaction.VendorName + ".png")))
+                    {
+                        <img src="@Url.Content("~/images/logos/" + Model.Transaction.VendorName + ".png")" class="vendor-image" title="@Model.Transaction.VendorName" />
+                    }
+
+                    else
+                    {
+                        @Model.Transaction.VendorName
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">Receipt Date: </div>
+                <div class="col-sm-9">@Model.ReceiptPurchaseDate</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">Amount: </div>
+                <div class="col-sm-3">@Model.Transaction.AmountDisplay</div>
+                <div class="col-sm-3">Balance: </div>
+                <div class="col-sm-3">@Model.Transaction.BalanceDisplay</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">Category 1: </div>
+                <div class="col-sm-3">@Model.Transaction.CategoryOne</div>
+                <div class="col-sm-3">Category 2: </div>
+                <div class="col-sm-3">@Model.Transaction.CategoryTwo</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">Check Number: </div>
+                <div class="col-sm-3">@Model.Transaction.CheckNumber</div>
+                <div class="col-sm-3">Reference Number: </div>
+                <div class="col-sm-3">@Model.Transaction.ReferenceNumber</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">Memo: </div>
+                <div class="col-sm-9">@Model.Transaction.Memo</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">Description: </div>
+                <div class="col-sm-9">@Model.Transaction.Description</div>
+            </div>
+        }
+    </div>
+}

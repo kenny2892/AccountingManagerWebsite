@@ -1,73 +1,119 @@
-﻿@model IEnumerable<AccountingWebsite.Models.Transaction>
-
-@{
-    if(ViewData["SortBy"] is null)
-    {
-        ViewData["SortBy"] = "purchasing_date";
-    }
-
-    if(ViewData["SortOrder"] is null)
-    {
-        ViewData["SortOrder"] = "desc";
-    }
-
-    var searchFields = new string[] { "BankSearch", "PurchasingDateSearch", "PostingDateSearch", "TransactionTypeSearch", "AmountSearch", "DescriptionSearch",
-        "CategoryOneSearch", "CategoryTwoSearch", "TypeSearch", "VendorNameSearch", "IsPurchaseSearch" };
-
-    foreach(string searchField in searchFields)
-    {
-        if(ViewData[searchField] is null)
-        {
-            ViewData[searchField] = "";
-        }
-    }
-}
+﻿@model TransactionTableViewModel
 
 <thead>
+    <input type="hidden" name="@(Model.ViewModelName + ".SortBy")" value="@Model.SortBy" />
+    <input type="hidden" name="@(Model.ViewModelName + ".IsDescending")" value="@Model.IsDescending" />
+    <input type="hidden" name="@(Model.ViewModelName + ".CurrentRowCount")" value="@Model.CurrentRowCount" />
     <tr>
         <th>
-            <a href="#" onclick="ReloadTable('bank', '@ViewData["SortBy"]', '@ViewData["SortOrder"]'); return false;">Bank</a>
-            <input type="text" value="@ViewData["BankSearch"]" value="@ViewData["BankSearch"]" placeholder="Search" id="bank-search" class="transaction-search" onkeydown="Search(event, '@ViewData["SortBy"]', '@ViewData["SortOrder"]')" />
+            <a href="#" onclick="ReloadTable('bank'); return false;">
+                Bank
+                @if(Model.SortBy == "bank")
+                {
+                    <span> @(Model.IsDescending ? "↓" : "↑")</span>
+                }
+            </a>
+            <input type="text" name="@(Model.ViewModelName + ".BankSearch")" value="@Model.BankSearch" placeholder="Search" id="bank-search" class="transaction-search" onkeydown="Search(event)" />
         </th>
         <th>
-            <a href="#" onclick="ReloadTable('purchasing_date', '@ViewData["SortBy"]', '@ViewData["SortOrder"]'); return false;">Purchasing Date</a>
-            <input type="text" value="@ViewData["PurchasingDateSearch"]" placeholder="Search" id="purchasing-date-search" class="transaction-search" onkeydown="Search(event, '@ViewData["SortBy"]', '@ViewData["SortOrder"]')" />
+            <a href="#" onclick="ReloadTable('purchasing_date'); return false;">
+                Purchasing Date
+                @if(Model.SortBy == "purchasing_date")
+                {
+                    <span> @(Model.IsDescending ? "↓" : "↑")</span>
+                }
+            </a>
+            <input type="text" name="@(Model.ViewModelName + ".PurchasingDateSearch")" value="@Model.PurchasingDateSearch" placeholder="Search" id="purchasing-date-search" class="transaction-search" onkeydown="Search(event)" />
         </th>
         <th>
-            <a href="#" onclick="ReloadTable('posting_date', '@ViewData["SortBy"]', '@ViewData["SortOrder"]'); return false;">Posting Date</a>
-            <input type="text" value="@ViewData["PostingDateSearch"]" placeholder="Search" id="posting-date-search" class="transaction-search" onkeydown="Search(event, '@ViewData["SortBy"]', '@ViewData["SortOrder"]')" />
+            <a href="#" onclick="ReloadTable('posting_date'); return false;">
+                Posting Date
+                @if(Model.SortBy == "posting_date")
+                {
+                    <span> @(Model.IsDescending ? "↓" : "↑")</span>
+                }
+            </a>
+            <input type="text" name="@(Model.ViewModelName + ".PostingDateSearch")" value="@Model.PostingDateSearch" placeholder="Search" id="posting-date-search" class="transaction-search" onkeydown="Search(event)" />
         </th>
         <th>
-            <a href="#" onclick="ReloadTable('transaction_type', '@ViewData["SortBy"]', '@ViewData["SortOrder"]'); return false;">Transaction Type</a>
-            <input type="text" value="@ViewData["TransactionTypeSearch"]" placeholder="Search" id="transaction-date-search" class="transaction-search" onkeydown="Search(event, '@ViewData["SortBy"]', '@ViewData["SortOrder"]')" />
+            <a href="#" onclick="ReloadTable('amount'); return false;">
+                Amount
+                @if(Model.SortBy == "amount")
+                {
+                    <span> @(Model.IsDescending ? "↓" : "↑")</span>
+                }
+            </a>
+            <input type="text" name="@(Model.ViewModelName + ".AmountSearch")" value="@Model.AmountSearch" placeholder="Search" id="amount-search" class="transaction-search" onkeydown="Search(event)" />
         </th>
         <th>
-            <a href="#" onclick="ReloadTable('amount', '@ViewData["SortBy"]', '@ViewData["SortOrder"]'); return false;">Amount</a>
-            <input type="text" value="@ViewData["AmountSearch"]" placeholder="Search" id="amount-search" class="transaction-search" onkeydown="Search(event, '@ViewData["SortBy"]', '@ViewData["SortOrder"]')" />
+            <a href="#" onclick="ReloadTable('description'); return false;">
+                Description
+                @if(Model.SortBy == "description")
+                {
+                    <span> @(Model.IsDescending ? "↓" : "↑")</span>
+                }
+            </a>
+            <input type="text" name="@(Model.ViewModelName + ".DescriptionSearch")" value="@Model.DescriptionSearch" placeholder="Search" id="description-search" class="transaction-search" onkeydown="Search(event)" />
         </th>
         <th>
-            <a href="#" onclick="ReloadTable('description', '@ViewData["SortBy"]', '@ViewData["SortOrder"]'); return false;">Description</a>
-            <input type="text" value="@ViewData["DescriptionSearch"]" placeholder="Search" id="description-search" class="transaction-search" onkeydown="Search(event, '@ViewData["SortBy"]', '@ViewData["SortOrder"]')" />
+            <a href="#" onclick="ReloadTable('category_one'); return false;">
+                Category 1
+                @if(Model.SortBy == "category_one")
+                {
+                    <span> @(Model.IsDescending ? "↓" : "↑")</span>
+                }
+            </a>
+            <input type="text" name="@(Model.ViewModelName + ".CategoryOneSearch")" value="@Model.CategoryOneSearch" placeholder="Search" id="category-one-search" class="transaction-search" onkeydown="Search(event)" />
         </th>
         <th>
-            <a href="#" onclick="ReloadTable('category_one', '@ViewData["SortBy"]', '@ViewData["SortOrder"]'); return false;">Category 1</a>
-            <input type="text" value="@ViewData["CategoryOneSearch"]" placeholder="Search" id="category-one-search" class="transaction-search" onkeydown="Search(event, '@ViewData["SortBy"]', '@ViewData["SortOrder"]')" />
+            <a href="#" onclick="ReloadTable('category_two'); return false;">
+                Category 2
+                @if(Model.SortBy == "category_two")
+                {
+                    <span> @(Model.IsDescending ? "↓" : "↑")</span>
+                }
+            </a>
+            <input type="text" name="@(Model.ViewModelName + ".CategoryTwoSearch")" value="@Model.CategoryTwoSearch" placeholder="Search" id="category-two-search" class="transaction-search" onkeydown="Search(event)" />
         </th>
         <th>
-            <a href="#" onclick="ReloadTable('category_two', '@ViewData["SortBy"]', '@ViewData["SortOrder"]'); return false;">Category 2</a>
-            <input type="text" value="@ViewData["CategoryTwoSearch"]" placeholder="Search" id="category-two-search" class="transaction-search" onkeydown="Search(event, '@ViewData["SortBy"]', '@ViewData["SortOrder"]')" />
+            <a href="#" onclick="ReloadTable('type'); return false;">
+                Type
+                @if(Model.SortBy == "type")
+                {
+                    <span> @(Model.IsDescending ? "↓" : "↑")</span>
+                }
+            </a>
+            <input type="text" name="@(Model.ViewModelName + ".TypeSearch")" value="@Model.TypeSearch" placeholder="Search" id="type-search" class="transaction-search" onkeydown="Search(event)" />
         </th>
         <th>
-            <a href="#" onclick="ReloadTable('type', '@ViewData["SortBy"]', '@ViewData["SortOrder"]'); return false;">Type</a>
-            <input type="text" value="@ViewData["TypeSearch"]" placeholder="Search" id="type-search" class="transaction-search" onkeydown="Search(event, '@ViewData["SortBy"]', '@ViewData["SortOrder"]')" />
+            <a href="#" onclick="ReloadTable('vendor_name'); return false;">
+                Vendor
+                @if(Model.SortBy == "vendor_name")
+                {
+                    <span> @(Model.IsDescending ? "↓" : "↑")</span>
+                }
+            </a>
+            <input type="text" name="@(Model.ViewModelName + ".VendorNameSearch")" value="@Model.VendorNameSearch" placeholder="Search" id="vendor-name-search" class="transaction-search" onkeydown="Search(event)" />
         </th>
         <th>
-            <a href="#" onclick="ReloadTable('vendor_name', '@ViewData["SortBy"]', '@ViewData["SortOrder"]'); return false;">Vendor</a>
-            <input type="text" value="@ViewData["VendorNameSearch"]" placeholder="Search" id="vendor-name-search" class="transaction-search" onkeydown="Search(event, '@ViewData["SortBy"]', '@ViewData["SortOrder"]')" />
+            <a href="#" onclick="ReloadTable('is_purchase'); return false;">
+                Is Purchase
+                @if(Model.SortBy == "is_purchase")
+                {
+                    <span> @(Model.IsDescending ? "↓" : "↑")</span>
+                }
+            </a>
+            <input type="text" name="@(Model.ViewModelName + ".IsPurchaseSearch")" value="@Model.IsPurchaseSearch" placeholder="Search" id="is-purchase-search" class="transaction-search" onkeydown="Search(event)" />
         </th>
         <th>
-            <a href="#" onclick="ReloadTable('is_purchase', '@ViewData["SortBy"]', '@ViewData["SortOrder"]'); return false;">Is Purchase</a>
-            <input type="text" value="@ViewData["IsPurchaseSearch"]" placeholder="Search" id="is-purchase-search" class="transaction-search" onkeydown="Search(event, '@ViewData["SortBy"]', '@ViewData["SortOrder"]')" />
+            <a href="#" onclick="ReloadTable('is_credit'); return false;">
+                Is Credit
+                @if(Model.SortBy == "is_credit")
+                {
+                    <span> @(Model.IsDescending ? "↓" : "↑")</span>
+                }
+            </a>
+            <input type="text" name="@(Model.ViewModelName + ".IsCreditSearch")" value="@Model.IsCreditSearch" placeholder="Search" id="is-credit-search" class="transaction-search" onkeydown="Search(event)" />
         </th>
         <th>
 
@@ -75,20 +121,17 @@
     </tr>
 </thead>
 <tbody>
-    @foreach(var item in Model)
+    @foreach(var item in Model.Transactions)
     {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Bank)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PurchasingDate)
+                @item.PurchasingDate.ToShortDateString()
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PostingDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransactionType)
+                @item.PostingDate.ToShortDateString()
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.AmountDisplay)
@@ -106,20 +149,26 @@
                 @Html.DisplayFor(modelItem => item.Type)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.VendorName)
+                <a asp-controller="Vendors" asp-action="Details" asp-route-id="@item.VendorName">@item.VendorName</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsPurchase)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.TransactionID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TransactionID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TransactionID">Delete</a>
+                @Html.DisplayFor(modelItem => item.IsCredit)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-controller="Transactions" asp-route-id="@item.TransactionID" target="_blank">Edit</a> |
+                <a asp-action="Details" asp-controller="Transactions" asp-route-id="@item.TransactionID" target="_blank">Details</a> |
+                <a asp-action="Delete" asp-controller="Transactions" asp-route-id="@item.TransactionID" target="_blank">Delete</a>
             </td>
         </tr>
     }
 </tbody>
 
-<script>
-    SetUpInfiniteScroll('@ViewData["SortBy"]', '@ViewData["SortOrder"]');
-</script>
+@if(Model.InfiniteScroll)
+{
+    <script>
+        SetUpInfiniteScroll();
+    </script>
+}

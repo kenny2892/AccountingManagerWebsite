@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "All Tranasctions";
+    ViewData["Title"] = "All Transactions";
 }
 
 <h1>Index</h1>
@@ -7,15 +7,24 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table" id="transactionTable">
-    <tbody></tbody>
-</table>
+<p>
+    <a asp-action="Import">Import</a>
+</p>
 
+<form method="post" id="transactionTableForm">
+    <table class="table" id="transactionTable">
+        <tbody></tbody>
+    </table>
+</form>
 
 @section Scripts
 {
     <script src="~/js/transactionTable.js" asp-append-version="true"></script>
     <script>
-        LoadTableContents(0, 'transactionTable', 'default', 'purchasing_date', 'desc');
+        methodUrl = "/Transactions/LoadTransactions";
+        formId = "transactionTableForm";
+        tableId = "transactionTable";
+        viewModelName = "vm";
+        LoadTableContents();
     </script>
 }

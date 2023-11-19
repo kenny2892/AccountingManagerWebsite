@@ -1,120 +1,257 @@
-﻿@model AccountingWebsite.Models.Transaction
+﻿@model TransactionDetailsViewModel
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment env
 
 @{
     ViewData["Title"] = "Details";
+    string rowClass = "";
+    string leftSideClass = "";
+    string rightSideClass = "";
+
+    if(Model.Receipt != null)
+    {
+        rowClass = "row";
+        leftSideClass = "col-sm-9";
+        rightSideClass = "col-sm-3";
+    }
 }
 
-<h1>Details</h1>
+@section Styles
+{
+    <link rel="stylesheet" href="~/css/dropdownSearch.css" asp-append-version="true" />
+}
+
+<p id="saveStatus">Transaction Items Saved!</p>
+<button type="button" class="save-transaction-button" onclick="Save();">Save</button>
+
+<div class="pop-up" id="itemMeasurementPopup" style="display: none;">
+    <div class="pop-up-page-overlay"></div>
+    <button type="button" onclick="HidePopup();" class="pop-up-close-button">✖</button>
+    <div class="@rowClass pop-up-content">
+        <div class="@leftSideClass">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="pop-up-item-wrapper">
+                        <h5>Create an Item</h5>
+                        <div class="pop-up-line"></div>
+                        <div class="pop-up-creating-wrapper" id="itemCreatingWrapper">
+                            <input type="text" placeholder="Type Item Name Here" id="newItemNameInput" />
+                            <input type="text" placeholder="Type Note Here" id="newItemNoteInput" />
+                            <button type="button" onclick="CreateItem()">Add Item</button>
+                            <p id="popupItemCreateStatus" class="success">Item Created!</p>
+                        </div>
+                        <h5>Existing Items</h5>
+                        <div class="pop-up-line"></div>
+                        <div style="text-align: center;">
+                            <input type="text" placeholder="Type Search Term Here" class="pop-up-search" />
+                        </div>
+                        <div class="pop-up-existing-wrapper">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="pop-up-measure-wrapper">
+                        <h5>Create a Measure</h5>
+                        <div class="pop-up-line"></div>
+                        <div class="pop-up-creating-wrapper" id="measureCreatingWrapper">
+                            <input type="text" placeholder="Type Measurement Name Here" id="newMeasureNameInput" />
+                            <input type="text" placeholder="Type Short Name Here" id="newMeasureShortNameInput" />
+                            <br />
+                            <label for="newMeasureIsCaseInput">Is a Case</label>
+                            <input type="checkbox" id="newMeasureIsCaseInput" />
+                            <label for="newMeasureIsContainerInput">Is a Container</label>
+                            <input type="checkbox" id="newMeasureIsContainerInput" />
+                            <br />
+                            <input type="text" placeholder="Type Amount Here" id="newMeasureAmountInput" />
+                            <div class="pop-up-measure-dropdown-wrapper">
+
+                            </div>
+                            <p id="popupMeasureCreateStatus" class="success">Measure Created!</p>
+                            <button type="button" onclick="CreateMeasure()">Add Measure</button>
+                        </div>
+                        <h5>Existing Measures</h5>
+                        <div class="pop-up-line"></div>
+                        <div style="text-align: center;">
+                            <input type="text" placeholder="Type Search Term Here" class="pop-up-search" />
+                        </div>
+                        <div class="pop-up-existing-wrapper">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="@rightSideClass">
+            @if(Model.Receipt != null)
+            {
+                <div>
+                    <img class="receipt-edit-img" src="/receipt_images/@Model.Receipt.FileName" alt="@Model.Receipt.FileName">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="pop-up" id="importPopup" style="display: none;">
+    <div class="pop-up-page-overlay"></div>
+    <button type="button" onclick="HideImportPopup();" class="pop-up-close-button">✖</button>
+    <div class="pop-up-content">
+        <div class="pop-up-import-wrapper">
+            <h5>Import</h5>
+            <div class="pop-up-line"></div>
+            <textarea class="pop-up-import-input" placeholder="Type item JSON here"></textarea>
+            <br />
+            <button type="button" onclick="PasteItems()">Import Items</button>
+        </div>
+    </div>
+</div>
+
+<div class="@rowClass">
+    <div class="@leftSideClass">
+        <input type="hidden" value="@Model.Transaction.TransactionID" id="transactionId" />
+        <h4 style="padding-top: 15px;">Transaction #@Model.Transaction.TransactionID</h4>
+
+        <div class="details-grid">
+            <hr style="height: 3px;" />
+            <div class="row">
+                <div class="col-sm-1">Bank: </div>
+                <div class="col-sm-3">
+                    @if(System.IO.File.Exists(System.IO.Path.Combine(env.WebRootPath, "images/logos/" + @Model.Transaction.Bank + ".png")))
+                    {
+                        <img src="@Url.Content("~/images/logos/" + Model.Transaction.Bank + ".png")" class="bank-image" title="@Model.Transaction.Bank" />
+                    }
+
+                    else
+                    {
+                        @Model.Transaction.Bank
+                    }
+                </div>
+
+                <div class="col-sm-1">Type: </div>
+                <div class="col-sm-3">@Model.Transaction.Type</div>
+                <div class="col-sm-1">Vendor: </div>
+                <div class="col-sm-3">
+                    @if(System.IO.File.Exists(System.IO.Path.Combine(env.WebRootPath, "images/logos/" + @Model.Transaction.VendorName + ".png")))
+                    {
+                        <img src="@Url.Content("~/images/logos/" + Model.Transaction.VendorName + ".png")" class="vendor-image" title="@Model.Transaction.VendorName" />
+                    }
+
+                    else
+                    {
+                        @Model.Transaction.VendorName
+                    }
+                </div>
+            </div>
+            @if(Model.Receipt != null)
+            {
+                <div class="row">
+                    <div class="col-sm-3">Receipt Date: </div>
+                    <div class="col-sm-3">@Model.Receipt.PurchaseDate</div>
+                </div>
+            }
+            <div class="row">
+                <div class="col-sm-3">Purchasing Date: </div>
+                <div class="col-sm-3">@Model.Transaction.PurchasingDate</div>
+                <div class="col-sm-3">Posting Date: </div>
+                <div class="col-sm-3">@Model.Transaction.PostingDate</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">Amount: </div>
+                <div class="col-sm-3">@Model.Transaction.AmountDisplay</div>
+                <div class="col-sm-3">Balance: </div>
+                <div class="col-sm-3">@Model.Transaction.BalanceDisplay</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">Category 1: </div>
+                <div class="col-sm-3">@Model.Transaction.CategoryOne</div>
+                <div class="col-sm-3">Category 2: </div>
+                <div class="col-sm-3">@Model.Transaction.CategoryTwo</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">Check Number: </div>
+                <div class="col-sm-3">@Model.Transaction.CheckNumber</div>
+                <div class="col-sm-3">Reference Number: </div>
+                <div class="col-sm-3">@Model.Transaction.ReferenceNumber</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">Memo: </div>
+                <div class="col-sm-3">@Model.Transaction.Memo</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">Description: </div>
+                <div class="col-sm-3">@Model.Transaction.Description</div>
+            </div>
+        </div>
+    </div>
+    <div class="@rightSideClass">
+        @if(Model.Receipt != null)
+        {
+            <div>
+                <img class="receipt-edit-img" src="/receipt_images/@Model.Receipt.FileName" alt="@Model.Receipt.FileName">
+            </div>
+        }
+    </div>
+</div>
+
+<hr />
+
+<div id="transactionItemsTableWrapper">
+    <button type="button" onclick="ShowItemMeasurementPopup();">View Items & Measurements</button>
+    <button type="button" onclick="CopyItems();">Copy Items</button>
+    <button type="button" onclick="ShowImportPopup();">Import Items</button>
+    <button type="button" class="add-item-button" onclick="AddItemRow('-1');">Add Item</button>
+    <table class="table" id="transactionItemsTable">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Measurement</th>
+                <th>Cost</th>
+                <th>Note</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
 
 <div>
-    <h4>Transaction</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Bank)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Bank)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PurchasingDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PurchasingDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PostingDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PostingDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TransactionType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TransactionType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Amount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Amount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CheckNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CheckNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ReferenceNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ReferenceNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CategoryOne)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CategoryOne)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CategoryTwo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CategoryTwo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Balance)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Balance)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Memo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Memo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ExtendedDescription)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ExtendedDescription)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VendorName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VendorName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ReceiptRelativeFilePath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ReceiptRelativeFilePath)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsPurchase)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsPurchase)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.TransactionID">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.Transaction?.TransactionID">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+@section Scripts
+{
+    <script src="~/js/transactionItems.js" asp-append-version="true"></script>
+    <script src="~/js/dropdownSearch.js" asp-append-version="true"></script>
+    <script>
+        itemOptions = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model.PossibleItems.Select(item => item.Name).ToList()));
+        itemOptionIds = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model.PossibleItems.Select(item => item.ID).ToList()));
+        measureOptions = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model.PossibleMeasurements.Select(measure => measure.Name).ToList()));
+        measureOptionIds = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model.PossibleMeasurements.Select(measure => measure.ID).ToList()));
+        SetupItemMeasurmentPopup();
+        SetupImportPopup();
+    </script>
+
+    @foreach(var entry in Model.Transaction.TransactionEntries)
+    {
+        <script>
+            var itemRow = AddItemRow('@entry.ID', '@Html.Raw(entry.Item.Name.Replace("'", "\\'"))', '@entry.Item.ID', '@entry.Quantity', '@Html.Raw(entry.Measurement.Name.Replace("'", "\\'"))', '@entry.Measurement.ID', '@entry.Cost', '@(String.IsNullOrEmpty(entry.Note) ? "" : Html.Raw(entry.Note.Replace("'", "\\'")))');
+
+            @foreach(var modEntry in entry.Modifiers)
+            {
+                <text>
+                    var parentModRow = AddModRow(itemRow, '@entry.ID', '@modEntry.ID', '@Html.Raw(modEntry.Modifier.Name.Replace("'", "\\'"))', '@modEntry.Modifier.ID', '@modEntry.Quantity', '@Html.Raw(modEntry.Measurement.Name.Replace("'", "\\'"))', '@modEntry.Measurement.ID', '@modEntry.Cost', '@(String.IsNullOrEmpty(modEntry.Note) ? "" : Html.Raw(modEntry.Note.Replace("'", "\\'")))');
+                </text>
+
+                @foreach(var childMod in modEntry.ChildModifiers)
+                {
+                    <text>
+                        var childModRow = AddChildModRow(parentModRow, '@childMod.ID', '@childMod.ParentModifierID', '@Html.Raw(childMod.Modifier.Name)', '@childMod.Modifier.ID', '@childMod.Quantity', '@Html.Raw(childMod.Measurement.Name.Replace("'", "\\'"))', '@childMod.Measurement.ID', '@childMod.Cost', '@(String.IsNullOrEmpty(childMod.Note) ? "" : Html.Raw(childMod.Note.Replace("'", "\\'")))');
+                    </text>
+                }
+            }
+        </script>
+    }
+}

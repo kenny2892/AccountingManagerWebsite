@@ -1,59 +1,87 @@
 ﻿let isLoading = false;
+let finished = false;
+let methodUrl = "";
+let formId = "";
+let tableId = "";
+let viewModelName = "";
 
-function Search(event, prevSortBy, prevSortOrder)
+function Search(event)
 {
 	if(event.key === 'Enter')
 	{
-		ReloadTable("default", prevSortBy, prevSortOrder);
+		finished = false;
+		$("input[name='" + viewModelName + ".CurrentRowCount']").val("0");
+		window.scrollTo(0, 0);
+		LoadTableContents();
 	}
 }
 
-function ReloadTable(sortBy, prevSortBy, prevSortOrder)
+function ReloadTable(newToSortBy)
 {
-	LoadTableContents(-1, 'transactionTable', sortBy, prevSortBy, prevSortOrder, $("#bank-search").val(), $("#purchasing-date-search").val(),
-		$("#posting-date-search").val(), $("#transaction-date-search").val(), $("#amount-search").val(), $("#description-search").val(),
-		$("#category-one-search").val(), $("#category-two-search").val(), $("#type-search").val(), $("#vendor-name-search").val(), $("#is-purchase-search").val());
+	if($("input[name='" + viewModelName + ".SortBy']").val() == newToSortBy)
+	{
+		if($("input[name='" + viewModelName + ".IsDescending']").val().toLowerCase() == "true")
+		{
+			$("input[name='" + viewModelName + ".IsDescending']").val("false");
+		}
+
+		else
+		{
+			$("input[name='" + viewModelName + ".IsDescending']").val("true");
+		}
+	}
+
+	else
+	{
+		$("input[name='" + viewModelName + ".IsDescending']").val("true");
+	}
+
+	finished = false;
+	LoadTableContents();
 }
 
-function LoadTableContents(existingRowCount, tableId, sortByParam, prevSortByParam, prevSortOrderParam,
-	bankSearchParam, purchasingDateSearchParam, postingDateSearchParam, transactionTypeSearchParam, amountSearchParam, descriptionSearchParam,
-        categoryOneSearchParam, categoryTwoSearchParam, typeSearchParam, vendorNameSearchParam, isPurchaseSearchParam)
+function LoadTableContents()
 {
 	$.ajax
 	({
-		url: "/Transactions/LoadTransactions",
-		data: {
-			'existingRowCount': existingRowCount, 'sortBy': sortByParam, 'prevSortBy': prevSortByParam, 'prevSortOrder': prevSortOrderParam,
-			'bankSearch': bankSearchParam, 'purchasingDateSearch': purchasingDateSearchParam, 'postingDateSearch': postingDateSearchParam,
-			'transactionTypeSearch': transactionTypeSearchParam, 'amountSearch': amountSearchParam, 'descriptionSearch': descriptionSearchParam,
-			'categoryOneSearch': categoryOneSearchParam, 'categoryTwoSearch': categoryTwoSearchParam, 'typeSearch': typeSearchParam,
-			'vendorNameSearch': vendorNameSearchParam, 'isPurchaseSearch': isPurchaseSearchParam
-		},
+		type: "POST",
+		url: methodUrl,
+		data: $("#" + formId).serialize(),
 		success: function (value)
 		{
 			if(value) 
 			{
+				let initialTableRowCount = $("#" + tableId + " tr").length + 1 - 1;
 				$("#" + tableId + " tbody").remove();
 				$("#" + tableId + " thead").remove();
 				$("#" + tableId).append(value);
+
+				if(initialTableRowCount == $("#" + tableId + " tr").length)
+				{
+					finished = true;
+				}
 			}
 		},
+		error: function (textStatus, errorThrown)
+		{
+			console.log(textStatus)
+			console.log(errorThrown)
+		}
+
 	});
 }
 
-function SetUpInfiniteScroll(prevSortBy, prevSortOrder)
+function SetUpInfiniteScroll()
 {
 	window.onscroll = function ()
 	{
 		if((window.innerHeight + window.scrollY) >= document.body.offsetHeight)
 		{
-			if(!isLoading)
+			if(!isLoading && !finished)
 			{
 				isLoading = true;
-				LoadTableContents($('#transactionTable tr').length, 'transactionTable', 'default', prevSortBy, prevSortOrder, $("#bank-search").val(), $("#purchasing-date-search").val(),
-					$("#posting-date-search").val(), $("#transaction-date-search").val(), $("#amount-search").val(), $("#description-search").val(),
-					$("#category-one-search").val(), $("#category-two-search").val(), $("#type-search").val(), $("#vendor-name-search").val(), $("#is-purchase-search").val());
-				isLoading = false;
+				LoadTableContents();
+				setTimeout(() => { isLoading = false; }, "500");
 			}
 		}
 	};

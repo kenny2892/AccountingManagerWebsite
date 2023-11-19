@@ -86,6 +86,17 @@ html { /* Dark Theme is the default */
 	--table-header-text-color: white;
 }
 
+.navbar-fixed-top {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 100;
+}
+
+.body-container {
+	margin-top: 60px;
+}
+
 body {
 	background-color: var(--body-bg-color);
 }
@@ -107,14 +118,328 @@ table {
 	margin-right: auto;
 }
 
+table th a {
+	white-space: nowrap;
+}
+
 .transaction-search {
 	width: 100%;
 }
 
 #transactionTable th {
+	position: sticky;
+	top: 50px;
 	background-color: var(--table-header-bg-color);
+}
+
+#transactionTable th {
+	color: var(--table-header-text-color);
 }
 
 #transactionTable th a {
 	color: var(--table-header-text-color);
+}
+
+.container {
+	max-width: 80% !important;
+}
+
+.bank-image, .vendor-image {
+	max-width: 100%;
+	max-height: 69px;
+}
+
+.details-grid .row {
+	margin-bottom: 32px;
+}
+
+.details-grid .col-sm-1 {
+	text-align: right;
+}
+
+.scrollable-wrapper {
+	overflow: hidden;
+	overflow-x: auto;
+	overflow-y: auto;
+}
+
+.import-table {
+	height: 80vh;
+}
+
+.import-table th, receipt-edit-table th {
+	position: sticky;
+	top: 0px;
+	z-index: 1;
+	background-color: var(--table-header-bg-color);
+	white-space: nowrap;
+}
+
+.report-container {
+	max-height: 80vh;
+	border: solid;
+	border-width: 1mm;
+	border-color: whitesmoke;
+}
+
+.report-container div {
+	height: 78vh;
+	max-height: 78vh;
+}
+
+.report-container .carousel-inner {
+	width: 92%; /* This is to allow room for the arrows */
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.report-dropdown {
+	margin-bottom: 20px;
+	margin-right: 10px;
+}
+
+#customDateSelection {
+	display: none;
+	margin-bottom: 20px;
+}
+
+.carousel-receipts, .carousel-receipts .carousel-inner {
+	height: 80vh;
+}
+
+.carousel-receipts .carousel-inner img {
+	width: auto;
+	height: auto;
+	min-width: 1px;
+	min-height: 1px !important;
+	max-height: 80vh;
+}
+
+.receipt-edit-img {
+	max-height: 80vh;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#carouselReceiptsToEdit .carousel-control-prev {
+	margin-left: -100px !important;
+}
+
+#carouselReceiptsToEdit .carousel-control-next {
+	margin-right: -100px !important;
+}
+
+.carousel-control-prev, .carousel-control-next {
+	background-color: black;
+	width: auto !important;
+}
+
+#carouselReceiptsToEdit .receipt-edit-details-side {
+	display: flex;
+	flex-direction: column;
+	height: 80vh;
+}
+
+#carouselReceiptsToEdit .receipt-edit-table {
+	overflow-y: auto;
+	height: inherit;
+}
+
+.receipt-edit-table th {
+	white-space: nowrap;
+	position: sticky;
+	top: 0px;
+	background-color: var(--table-header-bg-color);
+	color: var(--table-header-text-color);
+}
+
+.transaction-entry-row button {
+	float: right;
+}
+
+.transaction-parent-modifier-row .transaction-entry-item {
+	padding-left: 50px;
+	display: flex;
+}
+
+.transaction-child-modifier-row .transaction-entry-item {
+	padding-left: 100px;
+	display: flex;
+}
+
+#transactionItemsTableWrapper {
+	height: 80vh;
+	overflow-y: auto;
+}
+
+#transactionItemsTable th {
+	background-color: var(--table-header-bg-color);
+}
+
+#transactionItemsTable th {
+	color: var(--table-header-text-color);
+}
+
+#transactionItemsTable th a {
+	color: var(--table-header-text-color);
+}
+
+#itemQty, #itemCost {
+	max-width: 100px;
+}
+
+#itemNote {
+	width: 100%;
+}
+
+.row-delete-button {
+	background-color: transparent;
+	border-width: 3px;
+	border-color: transparent;
+	border-style: solid;
+}
+
+.row-delete-button:hover {
+	background-color: grey;
+	border-color: black;
+}
+
+.pop-up-page-overlay {
+	position: absolute;
+	z-index: 50;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	top: 0;
+	left: 0;
+}
+
+.pop-up .pop-up-content {
+	position: fixed;
+	z-index: 100;
+	width: 80%;
+	height: 100%;
+}
+
+.pop-up .pop-up-content .row {
+	height: 100%;
+}
+
+.pop-up-item-wrapper, .pop-up-measure-wrapper {
+	background-color: white;
+	width: 90%;
+	height: 80%;
+	border-color: var(--header-bg-color);
+	border-width: 15px;
+	border-style: outset;
+}
+
+.pop-up-item-wrapper h5, .pop-up-measure-wrapper h5 {
+	text-align: center;
+	padding-bottom: 0px;
+}
+
+.pop-up-content .receipt-edit-img {
+	border-color: var(--header-bg-color);
+	border-width: 5px;
+	border-style: outset;
+}
+
+.pop-up-existing-wrapper {
+	height: 100%;
+	width: 100%;
+	overflow-y: auto;
+	overflow-x: auto;
+	margin-left: 5px;
+}
+
+.pop-up-creating-wrapper {
+	text-align: center;
+	margin-top: 10px;
+}
+
+.pop-up-creating-wrapper button {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.pop-up-measure-dropdown-wrapper .dropdown-search {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.pop-up-creating-wrapper li {
+	text-align: left;
+}
+
+.pop-up-line {
+	width: 90%;
+	height: 2px;
+	background-color: black;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#popupItemCreateStatus, #popupMeasureCreateStatus {
+	display: none;
+}
+
+#saveStatus {
+	display: none;
+	text-align: center;
+	position: fixed;
+	width: 80%;
+}
+
+.success {
+	background-color: forestgreen;
+	color: white;
+}
+
+.error {
+	background-color: darkred;
+	color: white;
+}
+
+.pop-up-close-button {
+	position: fixed;
+	right: 0;
+	z-index: 75;
+	background-color: transparent;
+	border-width: 3px;
+	border-color: transparent;
+	border-style: solid;
+}
+
+.pop-up-close-button:hover {
+	background-color: grey;
+	border-color: black;
+}
+
+.pop-up-search {
+	width: 80%;
+}
+
+.add-item-button {
+	float: right;
+}
+
+.save-transaction-button {
+	position: fixed;
+	left: 0;
+}
+
+.pop-up-import-wrapper {
+	background-color: white;
+	width: 90%;
+	height: 80%;
+	border-color: var(--header-bg-color);
+	border-width: 15px;
+	border-style: outset;
+	text-align: center;
+}
+
+.pop-up-import-input {
+	width: 80%;
+	height: 80%;
 }

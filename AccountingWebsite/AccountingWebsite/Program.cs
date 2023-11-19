@@ -1,8 +1,11 @@
 using AccountingWebsite.Data;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
@@ -17,10 +20,18 @@ namespace AccountingWebsite
 
 			// Add services to the container.
 			builder.Services.AddControllersWithViews();
-			builder.Services.AddDbContext<TransactionDataContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection")));
+			builder.Services.AddDbContext<TransactionDataContext>(options => options.UseLazyLoadingProxies().UseSqlite(builder.Configuration.GetConnectionString("TransactionsConnection")));
+			builder.Services.AddDbContext<VendorContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("VendorConnection")));
+			builder.Services.AddDbContext<StatementContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("StatementConnection")));
 			builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-			var app = builder.Build();
+            // Remove Limit on Forms
+            builder.Services.Configure<FormOptions>(options =>
+            {
+                options.ValueCountLimit = int.MaxValue;
+            });
+
+            var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if(!app.Environment.IsDevelopment())
@@ -35,13 +46,20 @@ namespace AccountingWebsite
 			{
 				var services = scope.ServiceProvider;
 
-				var context = services.GetRequiredService<TransactionDataContext>();
-				context.Database.EnsureCreated();
-				DbInitializer.Initialize(context);
+				var transContext = services.GetRequiredService<TransactionDataContext>();
+				transContext.Database.EnsureCreated();
+				var vendorContext = services.GetRequiredService<VendorContext>();
+                vendorContext.Database.EnsureCreated();
+				DbInitializer.Initialize(transContext, vendorContext);
 			}
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "receipt_images")),
+                RequestPath = new PathString("/receipt_images")
+            });
 
 			app.UseRouting();
 

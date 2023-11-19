@@ -1,0 +1,88 @@
+﻿@model List<Transaction>
+
+@{
+    var xLabels = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select(trans => trans.VendorName).Distinct().ToList());
+    var yValues = Newtonsoft.Json.JsonConvert.SerializeObject(Model.GroupBy(trans => trans.VendorName)
+        .Select(vendorGroup => vendorGroup.Sum(vendorTrans => vendorTrans.IsCredit ? -1 * vendorTrans.Amount : vendorTrans.Amount)).ToList());
+
+    var vendorPairs = Model.GroupBy(trans => trans.VendorName)
+        .Select(group => (group.Key, -1 * group.Sum(vendorTrans => vendorTrans.IsCredit ? -1 * vendorTrans.Amount : vendorTrans.Amount)))
+        .OrderByDescending(pair => pair.Item2).ToList();
+
+    double totalEarned = Model.Where(trans => !trans.IsCreditPayment && (trans.IsCredit ? trans.Amount < 0 : trans.Amount > 0)).Sum(trans => trans.Amount);
+    double totalSpent = Model.Where(trans => trans.IsPurchase).Sum(trans => Math.Abs(trans.Amount));
+    double totalSaved = totalEarned - totalSpent;
+}
+
+<div class="row">
+    <div class="col-1">
+        <h6>Total Earned: </h6>
+    </div>
+    <div class="col-1">
+        <h6 style="text-align:right;">@totalEarned.ToString("C2")</h6>
+    </div>
+    <div class="col-10"></div>
+</div>
+
+<div class="row">
+    <div class="col-1">
+        <h6>Total Spent: </h6>
+    </div>
+    <div class="col-1" style="border-bottom-width: 3px; border-bottom-style: solid;">
+        <h6 style="text-align:right;">- @totalSpent.ToString("C2")</h6>
+    </div>
+    <div class="col-10"></div>
+</div>
+
+<div class="row">
+    <div class="col-1">
+        <h6>Into Savings: </h6>
+    </div>
+    <div class="col-1">
+        <h6 style="text-align:right;">@totalSaved.ToString("C2")</h6>
+    </div>
+    <div class="col-10"></div>
+</div>
+
+<div class="row report-container">
+    <div class="col-sm-3" style="overflow: hidden; overflow-y: auto;">
+        <ul style="border-bottom-width: 3px; border-bottom-style: solid; font-size: 26px;">Vendors:</ul>
+        <ul>
+            @foreach(var pair in vendorPairs)
+            {
+                <li>@pair.Key: @(pair.Item2 < 0 ? "-" + Math.Abs(@pair.Item2).ToString("C2") : @pair.Item2.ToString("C2"))</li>
+            }
+        </ul>
+    </div>
+    <div class="col-sm-9">
+        <div id="carouselCharts" class="carousel slide " data-bs-ride="carousel" data-bs-interval="false">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <canvas id="pie-chart" style="display: inline !important;"></canvas>
+                </div>
+                <div class="carousel-item">
+                    <canvas id="bar-chart"></canvas>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselCharts" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselCharts" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<table class="table" id="transactionTable">
+    <tbody></tbody>
+</table>
+
+<script>
+    GenerateBarChart(@Html.Raw(xLabels), @Html.Raw(yValues), @xLabels.Count());
+    GeneratePieChart(@Html.Raw(xLabels), @Html.Raw(yValues), @xLabels.Count());
+</script>

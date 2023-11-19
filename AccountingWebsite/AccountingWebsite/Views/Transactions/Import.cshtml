@@ -1,0 +1,30 @@
+﻿@model bool
+
+@{
+    ViewData["Title"] = "Import";
+}
+
+<h1>Import Transactions</h1>
+<p id="is-credit-container">
+    <label for="is-credit">Is Credit: </label>
+    <input type="checkbox" id="is-credit" />
+</p>
+<p id="bank-container">
+    <label for="bank">Bank: </label>
+    <input type="text" name="bank" id="bank" />
+</p>
+<input type="file" id="file-uploader" accept=".csv" />
+
+@if(Model)
+{
+    <h3>An error has occured with your import file. Please review data and try again.</h3>
+}
+
+<div id="import-results">
+
+</div>
+
+@section Scripts
+{
+    <script src="~/js/import.js" asp-append-version="true"></script>
+}

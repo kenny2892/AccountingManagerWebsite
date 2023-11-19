@@ -1,0 +1,15 @@
+﻿@model DropdownCheckboxViewModel
+
+<div id="dropdownThreeStage" class="dropdown-three-stage" tabindex="100">
+    <span class="anchor">@Model.Prompt</span>
+    <ul class="items row">
+        @for(int i = 0; i < Model.FormNames.Count && i < Model.Values.Count; i++)
+        {
+            string paramKey = @Model.FormNames[i] + ".Key";
+            string paramVal = @Model.FormNames[i] + ".Value";
+
+            <input type="hidden" name="@paramKey" value="@Model.Values[i]" />
+            <li class="col g-0">@await Html.PartialAsync("~/Views/Shared/_ThreeStageCheckbox.cshtml", @paramVal)<span class="col">@Model.Values[i]</span></li>
+        }
+    </ul>
+</div>

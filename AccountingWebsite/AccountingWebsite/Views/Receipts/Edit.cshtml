@@ -1,0 +1,59 @@
+﻿@model List<ReceiptEditViewModel>
+
+<form method="post" action="/Receipts/AssignMatch" onsubmit="ValidateSubmit(event, '@Model.Count')">
+    <button type="submit">Submit Results</button>
+
+    <div id="carouselReceiptsToEdit" class="carousel slide carousel-receipts" data-bs-ride="true" data-bs-interval="false">
+        <div class="carousel-indicators">
+            @for(int i = 0; i < Model.Count; i++)
+            {
+                @if(i == 0)
+                {
+                    <button type="button" data-bs-target="#carouselReceiptsToEdit" data-bs-slide-to="@i" class="active" aria-current="true" aria-label="Slide @i"></button>
+                }
+
+                else
+                {
+                    <button type="button" data-bs-target="#carouselReceiptsToEdit" data-bs-slide-to="@i" aria-label="Slide @i"></button>
+                }
+            }
+        </div>
+        <div class="carousel-inner">
+            @for(int i = 0; i < Model.Count; i++)
+            {
+                @if(i == 0)
+                {
+                    <div class="carousel-item active">
+                        @await Html.PartialAsync("~/Views/Receipts/_ReceiptEdit.cshtml", Model[i])
+                    </div>
+                }
+
+                else
+                {
+                    <div class="carousel-item">
+                        @await Html.PartialAsync("~/Views/Receipts/_ReceiptEdit.cshtml", Model[i])
+                    </div>
+                }
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselReceiptsToEdit" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselReceiptsToEdit" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script src="~/js/receiptEditing.js" asp-append-version="true"></script>
+    <script>
+        @for(int i = 0; i < Model.Count; i++)
+        {
+            <text>FindMatches(@i);</text>
+        }
+    </script>
+}
