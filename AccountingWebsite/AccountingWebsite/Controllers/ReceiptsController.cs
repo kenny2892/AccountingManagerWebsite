@@ -212,7 +212,7 @@ namespace AccountingWebsite.Controllers
 
                 await _transactionContext.SaveChangesAsync();
                 string receiptPath = Path.Combine(_hostingEnvironment.ContentRootPath, "receipt_images");
-                return View("Index", Directory.GetFiles(receiptPath).Where(file => file.EndsWith(".jpg") || file.EndsWith(".jpeg") || file.EndsWith(".png")).Select(file => Path.GetFileName(file)).ToList());
+                return View("Index", new ReceiptIndexViewModel() { ReceiptFileNames = Directory.GetFiles(receiptPath).Where(file => file.EndsWith(".jpg") || file.EndsWith(".jpeg") || file.EndsWith(".png")).Select(file => Path.GetFileName(file)).ToList() });
             }
 
             return new EmptyResult();

@@ -682,6 +682,8 @@ function UpdateMeasureDropdowns()
 							{
 								ReplaceOptions(this, newMeasureNames, newMeasureIds);
 							});
+
+							ReplaceOptions($("#newMeasureInnerMeasureInput"), newMeasureNames, newMeasureIds);
 						}
 					},
 					error: function (textStatus, errorThrown)

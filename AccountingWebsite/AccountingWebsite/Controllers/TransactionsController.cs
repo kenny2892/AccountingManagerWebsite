@@ -824,7 +824,7 @@ namespace AccountingWebsite.Controllers
             return true;
         }
 
-        public async Task<bool> CreateMeasure(string name, string shortname, bool isCase, bool isContainer, decimal amount, int innerMeasureId)
+        public async Task<bool> CreateMeasure(string name, string shortname, bool isCase, bool isContainer, decimal amount, int? innerMeasureId)
         {
             if(_transactionContext.Measurements.Any(existing => existing.Name == name && existing.Amount == amount && existing.IsCase == isCase && existing.IsContainer == isContainer))
             {
@@ -832,7 +832,7 @@ namespace AccountingWebsite.Controllers
             }
 
             var newMeasure = new Measurement() { Name = name, ShortName = shortname, IsCase = isCase, IsContainer = isContainer, Amount = amount };
-            if(newMeasure.IsCase || newMeasure.IsContainer)
+            if(newMeasure.IsCase || newMeasure.IsContainer || innerMeasureId is null)
             {
                 newMeasure.InnerMeasurementID = innerMeasureId;
             }
