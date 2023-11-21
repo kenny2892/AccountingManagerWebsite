@@ -300,6 +300,11 @@ namespace AccountingWebsite.Controllers
                     }
                 }
 
+                else
+                {
+                    entry.TransactionID = cellValues[headers.IndexOf(statementMap.TransactionIdHeader)];
+                }
+
                 var vendor = vendors.FirstOrDefault(vendor => vendor.TransactionKeyphrases.Any(keyphrase => entry.Description.ToLower().Contains(keyphrase.ToLower())));
                 if(vendor != null)
                 {
