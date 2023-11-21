@@ -1,0 +1,4 @@
+﻿Transaction ID,Purchasing Date,Posting Date,Amount,Check Number,Reference Number,Description,Type,Balance,Memo,Extended Description
+1234FakeId,11/19/2023,11/19/2023,12,,,Fake Vendor Name,Credit,0,,
+12345FakeId,1/4/2023,1/4/2023,5,,,Fake Vendor Name,Credit,0,,
+123456FakeId,7/8/2023,7/8/2023,27,,,Fake Vendor Name,Credit,0,,
