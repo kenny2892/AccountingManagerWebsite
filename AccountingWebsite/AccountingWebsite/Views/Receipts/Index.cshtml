@@ -6,36 +6,38 @@
 
 <h1>Receipts</h1>
 
-<form method="post" action="/Receipts/UploadReceipt" enctype="multipart/form-data">
-    <input type="file" name="receiptFiles" id="receiptFiles" accept=".jpg,.jpeg,.png" onchange="form.submit()" multiple />
-</form>
+<div class="receipt-inputs">
+    <form method="post" action="/Receipts/UploadReceipt" enctype="multipart/form-data">
+        <input type="file" name="receiptFiles" id="receiptFiles" accept=".jpg,.jpeg,.png" onchange="form.submit()" multiple />
+    </form>
 
-<form method="post" action="/Receipts/FilterReceipts">
-    <label for="mappedStatus">Mapping Requirements: </label>
-    <select name="mappedStatus" id="mappedStatus">
-        @if(Model.MappedStatus == "Only Mapped")
-        {
-            <option value=""></option>
-            <option value="Only Mapped" selected>Only Mapped</option>
-            <option value="Only Not Mapped">Only Not Mapped</option>
-        }
+    <form method="post" action="/Receipts/FilterReceipts">
+        <label for="mappedStatus">Mapping Requirements: </label>
+        <select name="mappedStatus" id="mappedStatus">
+            @if(Model.MappedStatus == "Only Mapped")
+            {
+                <option value=""></option>
+                <option value="Only Mapped" selected>Only Mapped</option>
+                <option value="Only Not Mapped">Only Not Mapped</option>
+            }
 
-        else if(Model.MappedStatus == "Only Not Mapped")
-        {
-            <option value=""></option>
-            <option value="Only Mapped">Only Mapped</option>
-            <option value="Only Not Mapped" selected>Only Not Mapped</option>
-        }
+            else if(Model.MappedStatus == "Only Not Mapped")
+            {
+                <option value=""></option>
+                <option value="Only Mapped">Only Mapped</option>
+                <option value="Only Not Mapped" selected>Only Not Mapped</option>
+            }
 
-        else
-        {
-            <option value="" selected></option>
-            <option value="Only Mapped">Only Mapped</option>
-            <option value="Only Not Mapped">Only Not Mapped</option>
-        }
-    </select>
-    <button type="submit">Filter</button>
-</form>
+            else
+            {
+                <option value="" selected></option>
+                <option value="Only Mapped">Only Mapped</option>
+                <option value="Only Not Mapped">Only Not Mapped</option>
+            }
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+</div>
 
 <hr style="height: 3px;" />
 

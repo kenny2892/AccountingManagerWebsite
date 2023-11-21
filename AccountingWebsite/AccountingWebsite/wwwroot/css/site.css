@@ -244,6 +244,10 @@ table th a {
 	height: 80vh;
 }
 
+.receipt-edit-details-side label, .receipt-inputs {
+	color: var(--text-color);
+}
+
 #carouselReceiptsToEdit .receipt-edit-table {
 	overflow-y: auto;
 	height: inherit;
